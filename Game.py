@@ -1,1 +1,1 @@
-print("hello world")
+print("This is the code for the game")
