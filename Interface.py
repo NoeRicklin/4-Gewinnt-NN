@@ -38,20 +38,45 @@ def test_win(game_state, new_pos, new_type):
 
     d1_line = []
     cur_pos = new_pos
+
+    offset_pos = (cur_pos[0] - 1, cur_pos[1] - 1)
     while True:
-        offset_pos = (cur_pos[0]-1, cur_pos[1]-1)
-        if not offset_pos[0] >= 0 and offset_pos[1] >= 0:
+        if offset_pos[0] < 0 or offset_pos[1] < 0:
             break
         cur_pos = offset_pos
-    print(cur_pos)
+        offset_pos = (cur_pos[0] - 1, cur_pos[1] - 1)
+
+    d1_line.append(cur_pos)
     while True:
-        d1_line.append(cur_pos)
         offset_pos = (cur_pos[0]+1, cur_pos[1]+1)
+        if offset_pos[0] > 6 or offset_pos[1] > 5:
+            break
+        cur_pos = offset_pos
+        d1_line.append(cur_pos)
 
-    print(d1_line, flush=True)
-    
+    #print(d1_line)
 
-test_win(gameState, (1, 2), 0)
+    d2_line = []
+    cur_pos = new_pos
+
+    offset_pos = (cur_pos[0] - 1, cur_pos[1] + 1)
+    while True:
+        if offset_pos[0] < 0 or offset_pos[1] > 5:
+            break
+        cur_pos = offset_pos
+        offset_pos = (cur_pos[0] - 1, cur_pos[1] + 1)
+    d2_line.append(cur_pos)
+    while True:
+        offset_pos = (cur_pos[0]+1, cur_pos[1]-1)
+        if offset_pos[0] > 6 or offset_pos[1] < 0:
+            break
+        cur_pos = offset_pos
+        d2_line.append(cur_pos)
+
+    #print(d2_line)
+
+
+test_win(gameState, (6, 5), 0)
 
 while running:
     # poll for events
