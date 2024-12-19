@@ -9,7 +9,9 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
+# gameState = [[0 for _ in range(6)] for _ in range(7)]
 gameState = [[0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [1, -1, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0], [-1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+ 
 def drawGrid():
     for x in range(0, width, tile_size):
         for y in range(0, height, tile_size):
@@ -28,6 +30,28 @@ def draw_game(list):
     for x in range(0, 7):
         for y in range(0, 6):
             put_thing([x, y], list[x][y])
+
+
+def test_win(game_state, new_pos, new_type):
+    ver_line = game_state[new_pos[0]]
+    hor_line = [game_state[i][new_pos[1]] for i in range(7)]
+
+    d1_line = []
+    cur_pos = new_pos
+    while True:
+        offset_pos = (cur_pos[0]-1, cur_pos[1]-1)
+        if not offset_pos[0] >= 0 and offset_pos[1] >= 0:
+            break
+        cur_pos = offset_pos
+    print(cur_pos)
+    while True:
+        d1_line.append(cur_pos)
+        offset_pos = (cur_pos[0]+1, cur_pos[1]+1)
+
+    print(d1_line, flush=True)
+    
+
+test_win(gameState, (1, 2), 0)
 
 while running:
     # poll for events
