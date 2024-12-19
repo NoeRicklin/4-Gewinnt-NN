@@ -36,6 +36,14 @@ while running:
         if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_q]:
             running = False
 
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            z = pos[0] // 100
+            for i in range (0, 6):
+                if gameState[z][i] == 0:
+                    gameState[z][i] = -1
+                    break
+
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
     drawGrid()
