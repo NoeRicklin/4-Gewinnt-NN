@@ -18,7 +18,7 @@ def drawGrid():
             rect = pygame.Rect(x, y, tile_size, tile_size)
             pygame.draw.rect(screen, "black", rect, 1)
 
-def put_thing(position, type):
+def display_chip(position, type):
     real_position = [position[0]*tile_size + tile_size/2, height-position[1]*tile_size - tile_size/2]
     if type == -1:
         pygame.draw.circle(screen, "red", real_position, 40)
@@ -26,10 +26,14 @@ def put_thing(position, type):
         pygame.draw.circle(screen, "blue", real_position, 40)
 
 
+def put_board(position, type):
+    gameState[position[0]][position[1]] = type
+
+
 def draw_game(list):
     for x in range(0, 7):
         for y in range(0, 6):
-            put_thing([x, y], list[x][y])
+            display_chip([x, y], list[x][y])
 
 
 def test_win(game_state, new_pos, new_type):
@@ -54,8 +58,6 @@ def test_win(game_state, new_pos, new_type):
         cur_pos = offset_pos
         d1_line.append(cur_pos)
 
-    #print(d1_line)
-
     d2_line = []
     cur_pos = new_pos
 
@@ -65,18 +67,26 @@ def test_win(game_state, new_pos, new_type):
             break
         cur_pos = offset_pos
         offset_pos = (cur_pos[0] - 1, cur_pos[1] + 1)
-    d2_line.append(cur_pos)
+    d2_line.append(gameState[cur_pos[0]][cur_pos[1]])
     while True:
         offset_pos = (cur_pos[0]+1, cur_pos[1]-1)
         if offset_pos[0] > 6 or offset_pos[1] < 0:
             break
         cur_pos = offset_pos
-        d2_line.append(cur_pos)
+        d2_line.append(gameState[cur_pos[0]][cur_pos[1]])
 
-    #print(d2_line)
+    for line in [hor_line, ver_line, d1_line, d2_line]:
+        in_row_amount = 0
+        for chip_type in line:
+            if chip_type == new_type:
+                in_row_amount += 1
+            else:
+                in_row_amount = 0
+            if in_row_amount == 4:
+                return True
+    return False
 
-
-test_win(gameState, (6, 5), 0)
+print(test_win(gameState, (3, 0), 1), flush = True)
 
 while running:
     # poll for events
@@ -92,6 +102,8 @@ while running:
                 if gameState[z][i] == 0:
                     gameState[z][i] = -1
                     break
+            print(z, i)
+            print(test_win(gameState, (z, i), -1), flush = True)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
