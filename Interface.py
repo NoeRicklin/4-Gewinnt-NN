@@ -1,5 +1,5 @@
 import pygame
-from bot_test import bot_move
+from bot_move import bot_move
 
 # pygame setup
 pygame.init()
@@ -12,9 +12,10 @@ dt = 0
 
 gameState = [[0 for _ in range(6)] for _ in range(7)]
 # gameState = [[0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [1, -1, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0], [-1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
-player = 1
+cur_player = 1
  
 def drawGrid():
+    screen.fill("purple")
     for x in range(0, width, tile_size):
         for y in range(0, height, tile_size):
             rect = pygame.Rect(x, y, tile_size, tile_size)
@@ -28,7 +29,7 @@ def display_chip(position, type):
         pygame.draw.circle(screen, "blue", real_position, 40)
 
 
-def put_board(position, type):
+def put_chip(position, type):
     gameState[position[0]][position[1]] = type
 
 
@@ -57,12 +58,11 @@ def get_diag_states(game_state, stone_pos, dir):
     return diagonal
 
 
-# print(get_diag_states(gameState, (0, 0), (1,1)))
-def test_win(game_state, stone_pos, new_type):
-    ver_line = game_state[stone_pos[0]]
-    hor_line = [game_state[i][stone_pos[1]] for i in range(7)]
-    d1_line = get_diag_states(game_state, stone_pos, (1, 1))
-    d2_line = get_diag_states(game_state, stone_pos, (1, -1))
+def test_win(game_state, new_stone_pos, new_type):
+    ver_line = game_state[new_stone_pos[0]]
+    hor_line = [game_state[i][new_stone_pos[1]] for i in range(7)]
+    d1_line = get_diag_states(game_state, new_stone_pos, (1, 1))
+    d2_line = get_diag_states(game_state, new_stone_pos, (1, -1))
 
     for line in [hor_line, ver_line, d1_line, d2_line]:
         in_row_amount = 0
@@ -76,51 +76,64 @@ def test_win(game_state, stone_pos, new_type):
     return False
 
 
-def do_move(event):
-    global player, running
-    column = get_move(player, event)
+def do_move(gameState, cur_player):
+    column = play_move(cur_player)
     if column is None: return
-    for i in range (0, 6):
-        if gameState[column][i] == 0:
-            gameState[column][i] = player
-            put_pos = (column, i)
-            if test_win(gameState, put_pos, player):
-                print(f"Player {player} has won!!!")
-                running = False
-            player *= -1
-            break
+
+    for index, tile in enumerate(gameState[column]):
+        if tile == 0:
+            gameState[column][index] = cur_player
+            new_stone_pos = (column, index)
+            return new_stone_pos
 
 
-def get_move(player, event):
-    if player == -1:
+# held variable to make sure one click isn't counted for multiple inputs
+held = False
+def player_move():
+    global held
+    if pygame.mouse.get_pressed()[0]:
+        if held:
+            return
+        held = True
+        pos = pygame.mouse.get_pos()
+        column = pos[0] // 100
+        return column
+    else:
+        held = False
+
+
+def play_move(cur_player):
+    # return bot_move(gameState)
+    if cur_player == -1:
         return bot_move(gameState)
     else:
-        if event.type == pygame.MOUSEBUTTONUP:
-            pos = pygame.mouse.get_pos()
-            column = pos[0] // 100
-            return column
+        return player_move()
 
-
+rounds = 0
 while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_q]:
             running = False
-        do_move(event)
+            pygame.quit()
+            print(rounds)
+            exit()
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
+    # Draw Game
     drawGrid()
     draw_game(gameState)
 
+    # Play the move
+    new_stone_pos = do_move(gameState, cur_player)
+    
+    # Check if someone won with the last move
+    if new_stone_pos is not None:
+        if test_win(gameState, new_stone_pos, cur_player):
+            print(f"Player {cur_player} has won!!!")
+            running = False
+            rounds += 1
+            gameState = [[0 for _ in range(6)] for _ in range(7)]
+        else:
+            cur_player *= -1
 
-    # flip() the display to put your work on screen
     pygame.display.flip()
-
-    # limits FPS to 60
-    # dt is delta time in seconds since last frame, used for framerate-
-    # independent physics.
-    dt = clock.tick(60) / 1000
-
-pygame.quit()
+    dt = clock.tick(20) / 100
