@@ -1,9 +1,9 @@
 from random import random
 import os
 
-n_input = 4
+n_input = 42
 n_hlayers = [3]
-n_output = 2
+n_output = 7
 
 layers = [n_input] + n_hlayers + [n_output]
 
@@ -19,8 +19,8 @@ for layer_ind in range(1, len(layers)):
     for node in range(cur_layer):
         node_params = ""
         for prev_node in range(prev_layer):
-            node_params += str(0) + ","
-        node_params = node_params.rstrip(",") + " " + str(0) + "|"
+            node_params += str(random()) + ","
+        node_params = node_params.rstrip(",") + " " + str(random()) + "|"
 
         layer_params += node_params
 
@@ -29,7 +29,4 @@ for layer_ind in range(1, len(layers)):
 
 
 
-NN_file.close()
-NN_file = open(os.path.dirname(__file__) + '\\Bot_Parameters.txt', "r")
-print(NN_file.read())
 NN_file.close()

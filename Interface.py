@@ -1,4 +1,5 @@
 import pygame
+from bot_test import bot_move
 
 # pygame setup
 pygame.init()
@@ -74,20 +75,30 @@ def test_win(game_state, stone_pos, new_type):
                 return True
     return False
 
+
 def do_move(event):
     global player, running
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos = pygame.mouse.get_pos()
-        z = pos[0] // 100
-        for i in range (0, 6):
-            if gameState[z][i] == 0:
-                gameState[z][i] = player
-                put_pos = (z, i)
-                if test_win(gameState, put_pos, player):
-                    print(f"Player {player} has won!!!")
-                    running = False
-                player *= -1
-                break
+    column = get_move(player, event)
+    if column is None: return
+    for i in range (0, 6):
+        if gameState[column][i] == 0:
+            gameState[column][i] = player
+            put_pos = (column, i)
+            if test_win(gameState, put_pos, player):
+                print(f"Player {player} has won!!!")
+                running = False
+            player *= -1
+            break
+
+
+def get_move(player, event):
+    if player == -1:
+        return bot_move(gameState)
+    else:
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            column = pos[0] // 100
+            return column
 
 
 while running:
