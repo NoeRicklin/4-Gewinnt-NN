@@ -103,7 +103,6 @@ def player_move():
 
 
 def play_move(cur_player):
-    return bot_move(gameState)
     if cur_player == -1:
         return bot_move(gameState)
     else:
@@ -119,8 +118,8 @@ while running:
             exit()
 
     # Draw Game
-    # drawGrid()
-    # draw_game(gameState)
+    drawGrid()
+    draw_game(gameState)
 
     # Play the move
     new_stone_pos = do_move(gameState, cur_player)
@@ -128,12 +127,10 @@ while running:
     # Check if someone won with the last move
     if new_stone_pos is not None:
         if test_win(gameState, new_stone_pos, cur_player):
-            # print(f"Player {cur_player} has won!!!")
-            # running = False
-            rounds += 1
-            gameState = [[0 for _ in range(6)] for _ in range(7)]
+            print(f"Player {cur_player} has won!!!")
+            running = False
         else:
             cur_player *= -1
 
-    # pygame.display.flip()
-    # dt = clock.tick(20) / 100
+    pygame.display.flip()
+    dt = clock.tick(20) / 100

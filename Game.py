@@ -1,11 +1,24 @@
 from bot_move import bot_move
+import os
 from time import time
 
-initState = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+initState = [[0 for _ in range(6)] for _ in range(7)]
 
 # gameState = [[0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [1, -1, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0], [-1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 cur_player = 1
- 
+
+all_parameters = [x for x in range(1, 101)]
+
+for i in range(1, 101):
+    parameters = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{i}.txt', "r").read()
+    # converts the parameters into a usable format
+    # parameters[layer][node][constant]([coefficient])
+    parameters = parameters.split("\n")
+    parameters = [layer.split("|") for layer in parameters]
+    parameters = [[node.split(" ") for node in layer] for layer in parameters]
+    parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
+    all_parameters[i-1] = parameters
+
 
 def get_diag_states(gameState, stone_pos, dir):
     diagonal = []
@@ -44,8 +57,8 @@ def test_win(game_state, new_stone_pos, new_type):
     return False
 
 
-def do_move(gameState, cur_player):
-    column = bot_move(gameState)
+def do_move(gameState, cur_player, parameters):
+    column = bot_move(gameState, parameters)
 
     for tile_index, tile in enumerate(gameState[column]):
         if tile == 0:
@@ -54,18 +67,19 @@ def do_move(gameState, cur_player):
             return new_stone_pos
 
 
-t0 = time()
+def play_game(bot1, bot2):
+    gameState = [initState_column[:] for initState_column in initState]
+    bot1_parameters = all_parameters[bot1-1]
+    bot2_parameters = all_parameters[bot2-1]
+    cur_player = 1
+    while True:
+        # Play the move
+        new_stone_pos = do_move(gameState, cur_player, bot1_parameters if cur_player == 1 else bot2_parameters)
 
-rounds = 0
-gameState = [initState_column[:] for initState_column in initState]
-while rounds < 50:
-    # Play the move
-    new_stone_pos = do_move(gameState, cur_player)
-    
-    if test_win(gameState, new_stone_pos, cur_player):
-        rounds += 1
-        gameState = [initState_column[:] for initState_column in initState]
-    else:
-        cur_player *= -1
-print(rounds)
-print(time() - t0)
+        if test_win(gameState, new_stone_pos, cur_player):
+            return cur_player
+        else:
+            cur_player *= -1
+
+
+print(play_game(0, 99))

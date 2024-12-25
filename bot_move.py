@@ -2,16 +2,9 @@ import os
 
 gameState = [[0 for _ in range(6)] for _ in range(7)]
 
-parameters = open(os.path.dirname(__file__) + '\\Bot_Parameters.txt', "r").read()
-# converts the parameters into a usable format
-# parameters[layer][node][constant]([coefficient])
-parameters = parameters.split("\n")[:-1]
-parameters = [layer.split("|") for layer in parameters]
-parameters = [[node.split(" ") for node in layer] for layer in parameters]
-parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
 
 
-def bot_move(gameState):
+def bot_move(gameState, parameters):
     prev_layer_activation = []
     # converts the gamestate into a usable format as the input vector
     for column in gameState:

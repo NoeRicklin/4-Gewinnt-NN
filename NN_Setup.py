@@ -1,5 +1,6 @@
 from random import random
 import os
+from time import time
 
 # Format of Bot_Paramters.txt:
 # Each line represents the parameters for one layer (not including the input)
@@ -13,33 +14,43 @@ n_input = 42
 n_hlayers = [3]
 n_output = 7
 
+bot_count = 100
+
 layers = [n_input] + n_hlayers + [n_output]
 
 # clears current parameters file
-NN_file = open(os.path.dirname(__file__) + '\\Bot_Parameters.txt', "w")
-NN_file.close()
 
-# open parameters file to write
-NN_file = open(os.path.dirname(__file__) + '\\Bot_Parameters.txt', "a")
 
-for layer_ind in range(1, len(layers)):
-    layer_params = ""
-    cur_layer = layers[layer_ind]
-    prev_layer = layers[layer_ind - 1]
 
-    for node in range(cur_layer):
-        node_params = ""
+def create_bot(bot_name):
+    NN_file = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{bot_name}.txt', "w")
+    NN_file.close()
+    NN_file = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{bot_name}.txt', "a")
+    for layer_ind in range(1, len(layers)):
+        layer_params = ""
+        cur_layer = layers[layer_ind]
+        prev_layer = layers[layer_ind - 1]
 
-        for prev_node in range(prev_layer):
-            # Add random value for the coefficients
-            node_params += str(random()) + ","
+        for node in range(cur_layer):
+            node_params = ""
 
-        # Add random value for the bias
-        node_params = node_params.rstrip(",") + " " + str(random()) + "|"
+            for prev_node in range(prev_layer):
+                # Add random value for the coefficients
+                node_params += str(random()) + ","
 
-        layer_params += node_params
+            # Add random value for the bias
+            node_params = node_params.rstrip(",") + " " + str(random()) + "|"
 
-    layer_params = layer_params.rstrip("|") + "\n"
-    NN_file.write(layer_params)
+            layer_params += node_params
+        if layer_ind != len(layers) - 1:
+            layer_params = layer_params.rstrip("|") + "\n"
+        else:
+            layer_params = layer_params.rstrip("|")
+        NN_file.write(layer_params)
+    NN_file.close()
 
-NN_file.close()
+# create 100 bots
+
+
+for i in range(1, bot_count + 1):
+    create_bot(i)
