@@ -35,10 +35,10 @@ def create_bot(bot_name):
 
             for prev_node in range(prev_layer):
                 # Add random value for the coefficients
-                node_params += str(random()) + ","
+                node_params += str(random() * 50) + ","
 
             # Add random value for the bias
-            node_params = node_params.rstrip(",") + " " + str(random()) + "|"
+            node_params = node_params.rstrip(",") + " " + str(random() * 50) + "|"
 
             layer_params += node_params
         if layer_ind != len(layers) - 1:

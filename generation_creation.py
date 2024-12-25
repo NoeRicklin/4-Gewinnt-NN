@@ -3,7 +3,7 @@ from random import random
 from copy import deepcopy
 import os
 num_fittest = 20
-offset_range = 0.05
+offset_range = 2
 
 
 def next_generation(prev_generation, win_list):
