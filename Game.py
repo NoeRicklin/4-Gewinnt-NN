@@ -1,15 +1,14 @@
 from bot_move import bot_move
+from NN_Setup import bot_count
+from generation_creation import next_generation
 import os
 from time import time
 
 initState = [[0 for _ in range(6)] for _ in range(7)]
-
 # gameState = [[0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [1, -1, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0], [-1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 cur_player = 1
-
-all_parameters = [x for x in range(1, 101)]
-
-for i in range(1, 101):
+all_parameters = [[] for _ in range(bot_count)]
+for i in range(bot_count):
     parameters = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{i}.txt', "r").read()
     # converts the parameters into a usable format
     # parameters[layer][node][constant]([coefficient])
@@ -17,22 +16,20 @@ for i in range(1, 101):
     parameters = [layer.split("|") for layer in parameters]
     parameters = [[node.split(" ") for node in layer] for layer in parameters]
     parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
-    all_parameters[i-1] = parameters
+    all_parameters[i] = parameters
 
 
 def get_diag_states(gameState, stone_pos, dir):
     diagonal = []
     cur_pos = stone_pos
-
     while True:
         offset_pos = (cur_pos[0] - dir[0], cur_pos[1] - dir[1])
         if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
             break
         cur_pos = offset_pos
-
     while True:
         diagonal.append(gameState[cur_pos[0]][cur_pos[1]])
-        offset_pos = (cur_pos[0]+dir[0], cur_pos[1]+dir[1])
+        offset_pos = (cur_pos[0] + dir[0], cur_pos[1] + dir[1])
         if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
             break
         cur_pos = offset_pos
@@ -44,7 +41,6 @@ def test_win(game_state, new_stone_pos, new_type):
     hor_line = [game_state[i][new_stone_pos[1]] for i in range(7)]
     d1_line = get_diag_states(game_state, new_stone_pos, (1, 1))
     d2_line = get_diag_states(game_state, new_stone_pos, (1, -1))
-
     for line in [hor_line, ver_line, d1_line, d2_line]:
         in_row_amount = 0
         for chip_type in line:
@@ -59,7 +55,8 @@ def test_win(game_state, new_stone_pos, new_type):
 
 def do_move(gameState, cur_player, parameters):
     column = bot_move(gameState, parameters)
-
+    if column is None:
+        return -1
     for tile_index, tile in enumerate(gameState[column]):
         if tile == 0:
             gameState[column][tile_index] = cur_player
@@ -69,17 +66,171 @@ def do_move(gameState, cur_player, parameters):
 
 def play_game(bot1, bot2):
     gameState = [initState_column[:] for initState_column in initState]
-    bot1_parameters = all_parameters[bot1-1]
-    bot2_parameters = all_parameters[bot2-1]
+    bot1_parameters = all_parameters[bot1]
+    bot2_parameters = all_parameters[bot2]
     cur_player = 1
     while True:
         # Play the move
         new_stone_pos = do_move(gameState, cur_player, bot1_parameters if cur_player == 1 else bot2_parameters)
-
+        if new_stone_pos == -1:
+            return 0
         if test_win(gameState, new_stone_pos, cur_player):
             return cur_player
         else:
             cur_player *= -1
 
 
-print(play_game(0, 99))
+bot_wins = [0 for _ in range(bot_count)]
+for bot1 in range(bot_count):
+    for bot2 in range(bot1 + 1, bot_count):
+        winner = play_game(bot1, bot2)
+        if winner == 1:
+            bot_wins[bot1] += winner
+
+next_generation(all_parameters, bot_wins)
+
+import pygame
+import os
+from bot_move import bot_move
+from NN_Setup import bot_count
+
+# pygame setup
+pygame.init()
+width, height = 700, 600
+tile_size = int(width / 7)
+screen = pygame.display.set_mode((width, height))
+clock = pygame.time.Clock()
+running = True
+dt = 0
+all_parameters = [[] for _ in range(bot_count)]
+for i in range(bot_count):
+    parameters = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{i}.txt', "r").read()
+    # converts the parameters into a usable format
+    # parameters[layer][node][constant]([coefficient])
+    parameters = parameters.split("\n")
+    parameters = [layer.split("|") for layer in parameters]
+    parameters = [[node.split(" ") for node in layer] for layer in parameters]
+    parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
+    all_parameters[i] = parameters
+gameState = [[0 for _ in range(6)] for _ in range(7)]
+# gameState = [[0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [1, -1, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0], [-1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+cur_player = 1
+
+
+def drawGrid():
+    screen.fill("purple")
+    for x in range(0, width, tile_size):
+        for y in range(0, height, tile_size):
+            rect = pygame.Rect(x, y, tile_size, tile_size)
+            pygame.draw.rect(screen, "black", rect, 1)
+
+
+def display_chip(position, type):
+    real_position = [position[0] * tile_size + tile_size / 2, height - position[1] * tile_size - tile_size / 2]
+    if type == 1:
+        pygame.draw.circle(screen, "red", real_position, 40)
+    if type == -1:
+        pygame.draw.circle(screen, "blue", real_position, 40)
+
+
+def put_chip(position, type):
+    gameState[position[0]][position[1]] = type
+
+
+def draw_game(list):
+    for x in range(0, 7):
+        for y in range(0, 6):
+            display_chip([x, y], list[x][y])
+
+
+def get_diag_states(game_state, stone_pos, dir):
+    diagonal = []
+    cur_pos = stone_pos
+    while True:
+        offset_pos = (cur_pos[0] - dir[0], cur_pos[1] - dir[1])
+        if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
+            break
+        cur_pos = offset_pos
+    while True:
+        diagonal.append(game_state[cur_pos[0]][cur_pos[1]])
+        offset_pos = (cur_pos[0] + dir[0], cur_pos[1] + dir[1])
+        if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
+            break
+        cur_pos = offset_pos
+    return diagonal
+
+
+def test_win(game_state, new_stone_pos, new_type):
+    ver_line = game_state[new_stone_pos[0]]
+    hor_line = [game_state[i][new_stone_pos[1]] for i in range(7)]
+    d1_line = get_diag_states(game_state, new_stone_pos, (1, 1))
+    d2_line = get_diag_states(game_state, new_stone_pos, (1, -1))
+    for line in [hor_line, ver_line, d1_line, d2_line]:
+        in_row_amount = 0
+        for chip_type in line:
+            if chip_type == new_type:
+                in_row_amount += 1
+            else:
+                in_row_amount = 0
+            if in_row_amount == 4:
+                return True
+    return False
+
+
+def do_move(gameState, cur_player, parameters):
+    column = play_move(cur_player, parameters)
+    if column is None: return
+    for index, tile in enumerate(gameState[column]):
+        if tile == 0:
+            gameState[column][index] = cur_player
+            new_stone_pos = (column, index)
+            return new_stone_pos
+
+
+# held variable to make sure one click isn't counted for multiple inputs
+held = False
+
+
+def player_move():
+    global held
+    if pygame.mouse.get_pressed()[0]:
+        if held:
+            return
+        held = True
+        pos = pygame.mouse.get_pos()
+        column = pos[0] // 100
+        return column
+    else:
+        held = False
+
+
+def play_move(cur_player, parameters):
+    if cur_player == -1:
+        return bot_move(gameState, parameters)
+    else:
+        return player_move()
+
+
+rounds = 0
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_q]:
+            running = False
+            pygame.quit()
+            exit()
+    # Draw Game
+    drawGrid()
+    draw_game(gameState)
+    # Play the move
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[2])
+
+    # Check if someone won with the last move
+    if new_stone_pos is not None:
+        if test_win(gameState, new_stone_pos, cur_player):
+            print(f"Player {cur_player} has won!!!")
+            running = False
+        else:
+            cur_player *= -1
+    pygame.display.flip()
+    dt = clock.tick(20) / 100
+

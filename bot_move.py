@@ -1,9 +1,3 @@
-import os
-
-gameState = [[0 for _ in range(6)] for _ in range(7)]
-
-
-
 def bot_move(gameState, parameters):
     prev_layer_activation = []
     # converts the gamestate into a usable format as the input vector
@@ -30,6 +24,6 @@ def bot_move(gameState, parameters):
         prev_layer_activation[prev_layer_activation.index(max(prev_layer_activation))] = -9999
         column_move = prev_layer_activation.index(max(prev_layer_activation))
         if max(prev_layer_activation) == -9999:
-            return -1
+            return None
 
     return column_move

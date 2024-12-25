@@ -1,5 +1,7 @@
 import pygame
+import os
 from bot_move import bot_move
+from NN_Setup import bot_count
 
 # pygame setup
 pygame.init()
@@ -10,10 +12,23 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
+all_parameters = [[] for _ in range(bot_count)]
+
+for i in range(bot_count):
+    parameters = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{i}.txt', "r").read()
+    # converts the parameters into a usable format
+    # parameters[layer][node][constant]([coefficient])
+    parameters = parameters.split("\n")
+    parameters = [layer.split("|") for layer in parameters]
+    parameters = [[node.split(" ") for node in layer] for layer in parameters]
+    parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
+    all_parameters[i] = parameters
+
 gameState = [[0 for _ in range(6)] for _ in range(7)]
 # gameState = [[0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [1, -1, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0], [-1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 cur_player = 1
- 
+
+
 def drawGrid():
     screen.fill("purple")
     for x in range(0, width, tile_size):
@@ -21,8 +36,9 @@ def drawGrid():
             rect = pygame.Rect(x, y, tile_size, tile_size)
             pygame.draw.rect(screen, "black", rect, 1)
 
+
 def display_chip(position, type):
-    real_position = [position[0]*tile_size + tile_size/2, height-position[1]*tile_size - tile_size/2]
+    real_position = [position[0] * tile_size + tile_size / 2, height - position[1] * tile_size - tile_size / 2]
     if type == 1:
         pygame.draw.circle(screen, "red", real_position, 40)
     if type == -1:
@@ -51,7 +67,7 @@ def get_diag_states(game_state, stone_pos, dir):
 
     while True:
         diagonal.append(game_state[cur_pos[0]][cur_pos[1]])
-        offset_pos = (cur_pos[0]+dir[0], cur_pos[1]+dir[1])
+        offset_pos = (cur_pos[0] + dir[0], cur_pos[1] + dir[1])
         if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
             break
         cur_pos = offset_pos
@@ -76,8 +92,8 @@ def test_win(game_state, new_stone_pos, new_type):
     return False
 
 
-def do_move(gameState, cur_player):
-    column = play_move(cur_player)
+def do_move(gameState, cur_player, parameters):
+    column = play_move(cur_player, parameters)
     if column is None: return
 
     for index, tile in enumerate(gameState[column]):
@@ -89,6 +105,8 @@ def do_move(gameState, cur_player):
 
 # held variable to make sure one click isn't counted for multiple inputs
 held = False
+
+
 def player_move():
     global held
     if pygame.mouse.get_pressed()[0]:
@@ -102,11 +120,12 @@ def player_move():
         held = False
 
 
-def play_move(cur_player):
+def play_move(cur_player, parameters):
     if cur_player == -1:
-        return bot_move(gameState)
+        return bot_move(gameState, parameters)
     else:
         return player_move()
+
 
 rounds = 0
 while running:
@@ -114,7 +133,6 @@ while running:
         if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_q]:
             running = False
             pygame.quit()
-            print(rounds)
             exit()
 
     # Draw Game
@@ -122,8 +140,8 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player)
-    
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[2])
+
     # Check if someone won with the last move
     if new_stone_pos is not None:
         if test_win(gameState, new_stone_pos, cur_player):

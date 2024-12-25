@@ -21,7 +21,6 @@ layers = [n_input] + n_hlayers + [n_output]
 # clears current parameters file
 
 
-
 def create_bot(bot_name):
     NN_file = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{bot_name}.txt', "w")
     NN_file.close()
@@ -52,5 +51,5 @@ def create_bot(bot_name):
 # create 100 bots
 
 
-for i in range(1, bot_count + 1):
-    create_bot(i)
+# for i in range(bot_count):
+    # create_bot(i)
