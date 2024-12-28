@@ -58,19 +58,22 @@ def play_game(bot1, bot2):
     bot1_parameters = all_parameters[bot1]
     bot2_parameters = all_parameters[bot2]
     cur_player = 1
+    moves = 0
     while True:
         # Play the move
         new_stone_pos = do_move(gameState, cur_player, bot1_parameters if cur_player == 1 else bot2_parameters)
+        moves += 1
         if new_stone_pos == -1:
-            return 0
+            return moves, 0
         if test_win(gameState, new_stone_pos, cur_player):
-            return cur_player
+            return moves, cur_player
         else:
             cur_player *= -1
 
 
 all_parameters = [[] for _ in range(bot_count)]
 for generation in range(100):
+    total_moves = 0
     t1 = time()
     # read new parameters from bot files
     for i in range(bot_count):
@@ -84,19 +87,31 @@ for generation in range(100):
         all_parameters[i] = parameters
 
     # let the games begin!
-    bot_wins = [0 for _ in range(bot_count)]
+    bot_score = [0 for _ in range(bot_count)]
     for bot1 in range(bot_count):
         for bot2 in range(bot_count):
-            winner = play_game(bot1, bot2)
+            moves, winner = play_game(bot1, bot2)
+            total_moves += moves
             if winner == 1:
-                bot_wins[bot1] += 1
-                # print("Game played", flush=True)
+                bot_score[bot1] += 10 + moves
+                bot_score[bot2] -= 20 - 0.5 * moves
 
             elif winner == -1:
-                bot_wins[bot2] += 1
-                # print("Game played", flush=True)
+                bot_score[bot2] += 12 + moves
+                bot_score[bot1] -= 20 - 0.5 * moves
+
+            elif winner == 0:
+                bot_score[bot1] -= 30
+                bot_score[bot2] -= 30
 
     # it's reproducing time!
-    next_generation(all_parameters, bot_wins)
+    next_generation(all_parameters, bot_score)
     t2 = time()
-    print(f"Generation {generation + 1 + 100} took {t2 - t1} seconds")
+
+    print(f"Generation {generation + 1} summary")
+    print(f"Botwins: {bot_score}")
+    fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]), reverse=True)[:20]]
+    print(f"Fittest: {fittest}")
+    print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 2)}", flush=True)
+    print(f"Generation took {t2 - t1} seconds")
+    print()

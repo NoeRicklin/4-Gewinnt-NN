@@ -35,10 +35,10 @@ def create_bot(bot_name):
 
             for prev_node in range(prev_layer):
                 # Add random value for the coefficients
-                node_params += str(random() * 50) + ","
+                node_params += str(random() - 0.5) + ","
 
             # Add random value for the bias
-            node_params = node_params.rstrip(",") + " " + str(random() * 50) + "|"
+            node_params = node_params.rstrip(",") + " " + str(random() - 0.5) + "|"
 
             layer_params += node_params
         if layer_ind != len(layers) - 1:
@@ -48,8 +48,7 @@ def create_bot(bot_name):
         NN_file.write(layer_params)
     NN_file.close()
 
+
 # create 100 bots
-
-
 # for i in range(bot_count):
     # create_bot(i)

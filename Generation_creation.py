@@ -4,6 +4,7 @@ from copy import deepcopy
 import os
 num_fittest = 20
 
+
 def next_generation(prev_generation, win_list):
     indices = [i for i in range(len(win_list))]
     win_ind = zip(win_list, indices)
@@ -21,9 +22,9 @@ def make_child(parent_parameters, bot_index):
     for layer in new_parameters:
         for node in layer:
             for coefficient in node[0]:
-                adjusted_parameters += str(float(coefficient) + random.normal(0, 4)) + ","
+                adjusted_parameters += str(float(coefficient) + random.normal(0, 1)) + ","
             adjusted_parameters = adjusted_parameters.rstrip(",") + " "
-            adjusted_parameters += str(float(node[1]) + random.normal(0, 4)) + "|"
+            adjusted_parameters += str(float(node[1]) + random.normal(0, 1)) + "|"
         adjusted_parameters = adjusted_parameters.rstrip("|") + "\n"
     adjusted_parameters = adjusted_parameters.rstrip("\n")
 
