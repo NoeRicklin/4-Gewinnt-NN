@@ -99,4 +99,4 @@ for generation in range(100):
     # it's reproducing time!
     next_generation(all_parameters, bot_wins)
     t2 = time()
-    print(f"Generation {generation + 1} took {t2 - t1} seconds")
+    print(f"Generation {generation + 1 + 100} took {t2 - t1} seconds")
