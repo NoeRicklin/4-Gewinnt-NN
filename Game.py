@@ -96,7 +96,6 @@ for generation in range(100):
                 bot_wins[bot2] += 1
                 # print("Game played", flush=True)
 
-
     # it's reproducing time!
     next_generation(all_parameters, bot_wins)
     t2 = time()
