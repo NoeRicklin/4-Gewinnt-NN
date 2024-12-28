@@ -1,6 +1,6 @@
-from bot_move import bot_move
-from NN_Setup import bot_count, create_bot
-from generation_creation import next_generation
+from Bot_move import bot_move
+from NN_Setup import bot_count
+from Generation_creation import next_generation
 import os
 from time import time
 
@@ -64,15 +64,13 @@ def play_game(bot1, bot2):
         if new_stone_pos == -1:
             return 0
         if test_win(gameState, new_stone_pos, cur_player):
-            if bot1 == 56 and bot2 == 34:
-               print(gameState)
             return cur_player
         else:
             cur_player *= -1
 
 
 all_parameters = [[] for _ in range(bot_count)]
-for generation in range(300):
+for generation in range(10):
     t1 = time()
     # read new parameters from bot files
     for i in range(bot_count):
@@ -87,21 +85,15 @@ for generation in range(300):
 
     # let the games begin!
     bot_wins = [0 for _ in range(bot_count)]
-    winner1 = 0
-    winner2 = 0
     for bot1 in range(bot_count):
         for bot2 in range(bot_count):
             winner = play_game(bot1, bot2)
             if winner == 1:
                 bot_wins[bot1] += 1
-                winner1 += 1
 
             elif winner == -1:
                 bot_wins[bot2] += 1
-                winner2 += 1
 
-    print(winner1, winner2)
-    print(bot_wins)
 
     # it's reproducing time!
     next_generation(all_parameters, bot_wins)
