@@ -112,6 +112,6 @@ for generation in range(100):
     print(f"Botwins: {bot_score}")
     fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]), reverse=True)[:20]]
     print(f"Fittest: {fittest}")
-    print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 2)}", flush=True)
-    print(f"Generation took {t2 - t1} seconds")
+    print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}", flush=True)
+    print(f"Generation took {round(t2 - t1, 1)} seconds")
     print()
