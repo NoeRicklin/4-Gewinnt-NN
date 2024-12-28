@@ -70,7 +70,7 @@ def play_game(bot1, bot2):
 
 
 all_parameters = [[] for _ in range(bot_count)]
-for generation in range(10):
+for generation in range(100):
     t1 = time()
     # read new parameters from bot files
     for i in range(bot_count):
@@ -90,9 +90,11 @@ for generation in range(10):
             winner = play_game(bot1, bot2)
             if winner == 1:
                 bot_wins[bot1] += 1
+                # print("Game played", flush=True)
 
             elif winner == -1:
                 bot_wins[bot2] += 1
+                # print("Game played", flush=True)
 
 
     # it's reproducing time!
