@@ -1,6 +1,6 @@
 import pygame
 import os
-from bot_move import bot_move
+from Bot_move import bot_move
 from NN_Setup import bot_count
 
 # pygame setup
@@ -25,7 +25,6 @@ for i in range(bot_count):
     all_parameters[i] = parameters
 
 gameState = [[0 for _ in range(6)] for _ in range(7)]
-gameState = [[1, -1, -1, -1, -1, 0], [0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, -1, 1, 1, -1, 1], [0, 0, 0, 0, 0, 0], [1, -1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 cur_player = 1
 
 
