@@ -72,7 +72,9 @@ def play_game(bot1, bot2):
 
 
 all_parameters = [[] for _ in range(bot_count)]
-for generation in range(100):
+
+generation = 250
+while True:
     total_moves = 0
     t1 = time()
     # read new parameters from bot files
@@ -108,10 +110,12 @@ for generation in range(100):
     next_generation(all_parameters, bot_score)
     t2 = time()
 
-    print(f"Generation {generation + 1} summary")
+    print(f"Generation {generation} summary")
     print(f"Botwins: {bot_score}")
     fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]), reverse=True)[:20]]
     print(f"Fittest: {fittest}")
     print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}", flush=True)
     print(f"Generation took {round(t2 - t1, 1)} seconds")
     print()
+
+    generation += 1
