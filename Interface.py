@@ -15,7 +15,7 @@ dt = 0
 all_parameters = [[] for _ in range(bot_count)]
 
 for i in range(bot_count):
-    parameters = open(os.path.dirname(__file__) + f'\\bot_parameters\\Bot{i}.txt', "r").read()
+    parameters = open(os.path.dirname(__file__) + f'\\bot_parametersV2\\Bot{i}.txt', "r").read()
     # converts the parameters into a usable format
     # parameters[layer][node][constant]([coefficient])
     parameters = parameters.split("\n")
@@ -25,7 +25,7 @@ for i in range(bot_count):
     all_parameters[i] = parameters
 
 gameState = [[0 for _ in range(6)] for _ in range(7)]
-cur_player = 1
+cur_player = -1
 
 
 def drawGrid():
@@ -139,7 +139,7 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[76])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[34])
 
     # Check if someone won with the last move
     if new_stone_pos is not None:
