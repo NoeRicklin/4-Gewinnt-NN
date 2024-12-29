@@ -23,12 +23,13 @@ def bot_move(gameState, parameters):
     # get the column with the highest activation of the output nodes
     column_move = prev_layer_activation.index(max(prev_layer_activation))
 
+    # print(prev_layer_activation, flush=True)
     # ensures no move into filled columns
     while gameState[column_move][-1] != 0:
-        prev_layer_activation[prev_layer_activation.index(max(prev_layer_activation))] = -9999
-        column_move = min(range(len(prev_layer_activation)), key=prev_layer_activation.__getitem__)
+        prev_layer_activation[prev_layer_activation.index(max(prev_layer_activation))] = -9999999
+        column_move = max(range(len(prev_layer_activation)), key=prev_layer_activation.__getitem__)
         # column_move = prev_layer_activation.index(max(prev_layer_activation))
-        if max(prev_layer_activation) == -9999:
+        if max(prev_layer_activation) == -9999999:
             return None
 
     return column_move

@@ -2,7 +2,7 @@ from NN_Setup import bot_count
 from numpy import random
 from copy import deepcopy
 import os
-num_fittest = 20
+num_fittest = 50
 
 
 def next_generation(prev_generation, win_list):

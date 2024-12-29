@@ -1,6 +1,6 @@
 from Bot_move import bot_move
 from NN_Setup import bot_count
-from Generation_creation import next_generation
+from Generation_creation import next_generation, num_fittest
 import os
 from time import time
 
@@ -73,7 +73,7 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 250
+generation = 1010
 while True:
     total_moves = 0
     t1 = time()
@@ -111,8 +111,8 @@ while True:
     t2 = time()
 
     print(f"Generation {generation} summary")
-    print(f"Botwins: {bot_score}")
-    fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]), reverse=True)[:20]]
+    print(f"Bot-Score: {bot_score}")
+    fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]), reverse=True)[:num_fittest]]
     print(f"Fittest: {fittest}")
     print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}", flush=True)
     print(f"Generation took {round(t2 - t1, 1)} seconds")
