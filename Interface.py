@@ -15,7 +15,7 @@ dt = 0
 all_parameters = [[] for _ in range(bot_count)]
 
 for i in range(bot_count):
-    parameters = open(os.path.dirname(__file__) + f'\\bot_parametersV2\\Bot{i}.txt', "r").read()
+    parameters = open(os.path.dirname(__file__) + f'\\bot_parametersV3\\Bot{i}.txt', "r").read()
     # converts the parameters into a usable format
     # parameters[layer][node][constant]([coefficient])
     parameters = parameters.split("\n")
@@ -140,7 +140,7 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[34])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[3])
 
     # Check if someone won with the last move
     if new_stone_pos is not None:

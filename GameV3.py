@@ -3,6 +3,7 @@ from NN_Setup import bot_count
 from Generation_creation import next_generation, num_fittest
 from random import randint
 import os
+from copy import deepcopy
 from time import time
 
 
@@ -54,6 +55,7 @@ def do_move(gameState, cur_player, parameters):
             return new_stone_pos
 
 
+'''
 def play_game(bot1, bot2):
     gameState = [initState_column[:] for initState_column in initState]
     bot1_parameters = all_parameters[bot1]
@@ -70,7 +72,7 @@ def play_game(bot1, bot2):
             return moves, cur_player
         else:
             cur_player *= -1
-
+'''
 
 def random_move(gameState, current_player):
     column = randint(0, 6)
@@ -79,7 +81,7 @@ def random_move(gameState, current_player):
         column = randint(0, 6)
         count += 1
         if count > 10:
-            return None
+            return -1, gameState
     height = 0
     while gameState[column][height] != 0:
         height += 1
@@ -90,26 +92,29 @@ def random_move(gameState, current_player):
 
 def random_game():
     current_player = 1
-    gameState = [[0 for _ in range(6)] for _ in range(7)]
+    gameState_random = [[0 for _ in range(6)] for _ in range(7)]
     while True:
-        new_stone_pos, gameState = random_move(gameState, current_player)
-        if test_win(gameState, new_stone_pos, current_player):
-            if current_player == 1:
-                gameState[new_stone_pos[0]][new_stone_pos[1]] = 0
-                return gameState
-            gameState = [[0 for _ in range(6)] for _ in range(7)]
+        new_stone_pos_random, gameState_random = random_move(gameState_random, current_player)
+        if new_stone_pos_random == -1:
+            gameState_random = [[0 for _ in range(6)] for _ in range(7)]
+            current_player = -1
+        else:
+            if test_win(gameState_random, new_stone_pos_random, current_player):
+                if current_player == 1:
+                    gameState_random[new_stone_pos_random[0]][new_stone_pos_random[1]] = 0
+                    return gameState_random
+                gameState_random = [[0 for _ in range(6)] for _ in range(7)]
         current_player *= -1
 
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 100
+generation = 0
 initState = [[0 for _ in range(6)] for _ in range(7)]
 
 
 while True:
     t1 = time()
-    initState = random_game()
 
     # read new parameters from bot files
     for i in range(bot_count):
@@ -124,17 +129,19 @@ while True:
 
     bot_score = [0 for _ in range(bot_count)]
 
-    for bot in range(bot_count):
-        gameState = [_ for _ in initState]
-        bot_params = all_parameters[bot]
-        new_stone_pos = do_move(gameState, 1, bot_params)
-        if new_stone_pos == -1:
-            continue
-        if test_win(gameState, new_stone_pos, cur_player):
-            if cur_player == 1:
-                bot_score[bot] += 1
-        print(initState, flush=True)
-
+    # let the games begin!
+    for game in range(0, 100):
+        initState = random_game()
+        for bot in range(bot_count):
+            gameState = deepcopy(initState)
+            bot_params = all_parameters[bot]
+            new_stone_pos = do_move(gameState, 1, bot_params)
+            if new_stone_pos != -1:
+                gameState[new_stone_pos[0]][new_stone_pos[1]] = 1
+                if test_win(gameState, new_stone_pos, 1):
+                    # it is always cur_player == 1
+                    # if cur_player == 1:
+                    bot_score[bot] += 1
 
     # it's reproducing time!
     next_generation(all_parameters, bot_score)

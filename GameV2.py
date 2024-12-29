@@ -1,7 +1,7 @@
 from Bot_move import bot_move
 from NN_Setup import bot_count
 from Generation_creation import next_generation, num_fittest
-from Data_Converter import new_gameState
+from Data_converter import new_gameState
 from random import randint
 import os
 from time import time
