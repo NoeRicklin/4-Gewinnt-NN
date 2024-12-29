@@ -109,7 +109,7 @@ def random_game():
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 0
+generation = 1750
 initState = [[0 for _ in range(6)] for _ in range(7)]
 
 
