@@ -73,7 +73,7 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 1010
+generation = 1050
 while True:
     total_moves = 0
     t1 = time()

@@ -139,7 +139,7 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[44])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[76])
 
     # Check if someone won with the last move
     if new_stone_pos is not None:
