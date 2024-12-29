@@ -50,5 +50,5 @@ def create_bot(bot_name):
 
 
 # create 100 bots
-for i in range(bot_count):
-    create_bot(i)
+# for i in range(bot_count):
+    # create_bot(i)
