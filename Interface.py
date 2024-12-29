@@ -25,7 +25,7 @@ for i in range(bot_count):
     all_parameters[i] = parameters
 
 gameState = [[0 for _ in range(6)] for _ in range(7)]
-cur_player = -1
+cur_player = 1
 
 
 def drawGrid():
@@ -120,10 +120,11 @@ def player_move():
 
 
 def play_move(cur_player, parameters):
-    if cur_player == -1:
-        return bot_move(gameState, parameters)
-    else:
-        return player_move()
+    return player_move()
+    # if cur_player == -1:
+    #     return bot_move(gameState, parameters)
+    # else:
+    #     return player_move()
 
 
 rounds = 0

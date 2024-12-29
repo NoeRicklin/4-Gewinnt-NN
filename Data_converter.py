@@ -3,6 +3,7 @@ import os
 game_data = open(os.path.dirname(__file__) + f'\\connect_4\\connect-4.data')
 single_games = game_data.read().split("\n")
 
+
 def new_gameState(game_index):
     raw_game = single_games[game_index].split(",")[:-1]
     conv_game = [[0 for _ in range(6)] for _ in range(7)]
@@ -19,4 +20,3 @@ def new_gameState(game_index):
 
         conv_game[x][y] = value
     return conv_game
-

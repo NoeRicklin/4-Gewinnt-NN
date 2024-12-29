@@ -28,6 +28,6 @@ def make_child(parent_parameters, bot_index):
         adjusted_parameters = adjusted_parameters.rstrip("|") + "\n"
     adjusted_parameters = adjusted_parameters.rstrip("\n")
 
-    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV2\\Bot{bot_index}.txt', "w")
+    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV3\\Bot{bot_index}.txt', "w")
     NN_file.write(adjusted_parameters)
     NN_file.close()

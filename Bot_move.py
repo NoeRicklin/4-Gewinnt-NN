@@ -1,4 +1,6 @@
 import numpy as np
+
+
 def bot_move(gameState, parameters):
     prev_layer_activation = []
     # converts the gamestate into a usable format as the input vector
