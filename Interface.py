@@ -120,11 +120,11 @@ def player_move():
 
 
 def play_move(cur_player, parameters):
-    return player_move()
-    # if cur_player == -1:
-    #     return bot_move(gameState, parameters)
-    # else:
-    #     return player_move()
+    # return player_move()
+    if cur_player == -1:
+        return bot_move(gameState, parameters)
+    else:
+        return player_move()
 
 
 rounds = 0
@@ -140,7 +140,7 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[3])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[99])
 
     # Check if someone won with the last move
     if new_stone_pos is not None:
