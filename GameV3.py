@@ -136,12 +136,9 @@ while True:
             gameState = deepcopy(initState)
             bot_params = all_parameters[bot]
             new_stone_pos = do_move(gameState, 1, bot_params)
-            if new_stone_pos != -1:
-                gameState[new_stone_pos[0]][new_stone_pos[1]] = 1
-                if test_win(gameState, new_stone_pos, 1):
-                    # it is always cur_player == 1
-                    # if cur_player == 1:
-                    bot_score[bot] += 1
+            gameState[new_stone_pos[0]][new_stone_pos[1]] = 1
+            if test_win(gameState, new_stone_pos, 1):
+                bot_score[bot] += 1
 
     # it's reproducing time!
     next_generation(all_parameters, bot_score)
