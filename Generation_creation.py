@@ -1,8 +1,9 @@
-from NN_Setup import bot_count
+from NN_Setup import bot_count, create_bot
 from numpy import random
 from copy import deepcopy
 import os
-num_fittest = 50
+num_fittest = 30
+random_max = 5
 
 
 def next_generation(prev_generation, win_list):
@@ -13,7 +14,10 @@ def next_generation(prev_generation, win_list):
 
     for i in range(bot_count):
         if i not in fittest:
-            make_child(prev_generation[fittest[i % num_fittest]], i)
+            if i > bot_count - random_max:
+                create_bot(i)
+            else:
+                make_child(prev_generation[fittest[i % num_fittest]], i)
 
 
 def make_child(parent_parameters, bot_index):
@@ -28,6 +32,6 @@ def make_child(parent_parameters, bot_index):
         adjusted_parameters = adjusted_parameters.rstrip("|") + "\n"
     adjusted_parameters = adjusted_parameters.rstrip("\n")
 
-    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV3\\Bot{bot_index}.txt', "w")
+    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV4\\Bot{bot_index}.txt', "w")
     NN_file.write(adjusted_parameters)
     NN_file.close()

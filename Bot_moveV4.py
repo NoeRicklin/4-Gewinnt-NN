@@ -1,11 +1,15 @@
 import numpy as np
+row_weight = 0.85
 
 
-def bot_move(gameState, parameters):
+def bot_move(gameState, parameters, player):
     prev_layer_activation = []
     # converts the gamestate into a usable format as the input vector
     for column in gameState:
-        prev_layer_activation += column
+        column_hash = 0
+        for row, stone in enumerate(column):
+            column_hash += stone * (row_weight ** row) * player
+        prev_layer_activation.append(column_hash)
 
     for index, layer in enumerate(parameters):
         # one layer

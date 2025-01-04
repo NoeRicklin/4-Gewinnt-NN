@@ -10,21 +10,19 @@ from time import time
 # node, seperated from the coefficients by a " "
 # Example layer: 4,7,5 7|7,10,1 2|10,8,5 7|1,4,6 3|7,10,4 1|10,6,6 10|2,10,6 2
 
-n_input = 42
-n_hlayers = [10, 5]
+n_input = 7
+n_hlayers = [7]
 n_output = 7
 
 bot_count = 100
 
 layers = [n_input] + n_hlayers + [n_output]
 
-# clears current parameters file
-
 
 def create_bot(bot_name):
-    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV3\\Bot{bot_name}.txt', "w")
+    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV4\\Bot{bot_name}.txt', "w")
     NN_file.close()
-    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV3\\Bot{bot_name}.txt', "a")
+    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV4\\Bot{bot_name}.txt', "a")
     for layer_ind in range(1, len(layers)):
         layer_params = ""
         cur_layer = layers[layer_ind]
@@ -51,4 +49,4 @@ def create_bot(bot_name):
 
 # create 100 bots
 # for i in range(bot_count):
-    # create_bot(i)
+#     create_bot(i)
