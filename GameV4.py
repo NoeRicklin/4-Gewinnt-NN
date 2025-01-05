@@ -82,7 +82,7 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 40
+generation = 1000
 while True:
     total_moves = 0
     win_types = {"Stacked": 0, "Flat": 0, "Diagonal": 0}
