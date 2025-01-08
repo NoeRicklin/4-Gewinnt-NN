@@ -1,4 +1,4 @@
-from Bot_moveV4 import bot_move
+from Bot_move import bot_move
 from NN_Setup import bot_count
 from Generation_creation import next_generation, num_fittest
 import os
@@ -82,7 +82,7 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 1000
+generation = 0
 while True:
     total_moves = 0
     win_types = {"Stacked": 0, "Flat": 0, "Diagonal": 0}
@@ -108,7 +108,7 @@ while True:
             if winner == 1:
                 if stacked_win:
                     bot_score[bot1] -= 20
-                    bot_score[bot2] -= 20 - 0.5 * moves
+                    bot_score[bot2] -= 25 - 0.5 * moves
                 else:
                     bot_score[bot1] += 10 + moves
                     bot_score[bot2] -= 20 - 0.5 * moves
@@ -116,7 +116,7 @@ while True:
             elif winner == -1:
                 if stacked_win:
                     bot_score[bot2] -= 20
-                    bot_score[bot1] -= 20 - 0.5 * moves
+                    bot_score[bot1] -= 25 - 0.5 * moves
                 else:
                     bot_score[bot2] += 12 + moves
                     bot_score[bot1] -= 20 - 0.5 * moves

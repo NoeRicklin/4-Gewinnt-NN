@@ -3,7 +3,6 @@ from numpy import random
 from copy import deepcopy
 import os
 num_fittest = 30
-random_max = 5
 
 
 def next_generation(prev_generation, win_list):
@@ -14,10 +13,7 @@ def next_generation(prev_generation, win_list):
 
     for i in range(bot_count):
         if i not in fittest:
-            if i > bot_count - random_max:
-                create_bot(i)
-            else:
-                make_child(prev_generation[fittest[i % num_fittest]], i)
+            make_child(prev_generation[fittest[i % num_fittest]], i)
 
 
 def make_child(parent_parameters, bot_index):

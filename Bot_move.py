@@ -1,11 +1,11 @@
 import numpy as np
 
 
-def bot_move(gameState, parameters):
+def bot_move(gameState, parameters, player):
     prev_layer_activation = []
     # converts the gamestate into a usable format as the input vector
     for column in gameState:
-        prev_layer_activation += column
+        prev_layer_activation += [player * tile for tile in column]
 
     for index, layer in enumerate(parameters):
         # one layer
