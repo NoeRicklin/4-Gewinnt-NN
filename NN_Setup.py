@@ -2,12 +2,12 @@ from random import random
 import os
 from time import time
 
-# Format of Bot_Paramters.txt:
+# Format of Bot{i}.txt:
 # Each line represents the parameters for one layer (not including the input)
-# Individual nodes within one layer are seperated by "|"
+# Individual nodes within one layer are separated by "|"
 # Within one node first there are the coefficients to the nodes for the
-# previous layer seperated by "," and at the end there is the bias for the
-# node, seperated from the coefficients by a " "
+# previous layer separated by "," and at the end there is the bias for the
+# node, separated from the coefficients by a " "
 # Example layer: 4,7,5 7|7,10,1 2|10,8,5 7|1,4,6 3|7,10,4 1|10,6,6 10|2,10,6 2
 
 n_input = 7

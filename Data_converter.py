@@ -1,4 +1,5 @@
 import os
+# converter
 
 game_data = open(os.path.dirname(__file__) + f'\\connect_4\\connect-4.data')
 single_games = game_data.read().split("\n")
