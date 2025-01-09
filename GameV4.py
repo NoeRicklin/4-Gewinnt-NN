@@ -75,6 +75,8 @@ def play_game(bot1, bot2):
         if new_stone_pos == -1:
             return moves, 0
         if test_win(gameState, new_stone_pos, cur_player):
+            if bot1 == randint(0, 100) and bot2 == randint(0, 100):
+                    print(gameState)
             return moves, cur_player
         else:
             cur_player *= -1
@@ -82,7 +84,7 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 94
+generation = 112
 while True:
     total_moves = 0
     win_types = {"Stacked": 0, "Flat": 0, "Diagonal": 0}
@@ -131,10 +133,10 @@ while True:
 
     print(f"Generation {generation} summary")
     print(f"Bot-Score: {bot_score}")
-    fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]), reverse=True)[:num_fittest]]
+    fittest = [i[1] for i in sorted(zip(bot_score, [i for i in range(len(bot_score))]))[:num_fittest]]
     print(f"Fittest: {fittest}")
     print(f"Average Score: {sum(bot_score) / len(bot_score)}")
-    print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}", flush=True)
+    print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}")
     print(f"Stacked Wins: {win_types['Stacked']}, Flat Wins: {win_types['Flat']}, Diagonal Wins: {win_types['Diagonal']}")
     print(f"Generation took {round(t2 - t1, 1)} seconds")
     print()
