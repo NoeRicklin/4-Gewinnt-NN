@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from Bot_move import bot_move
 from NN_Setup import bot_count
 from Generation_creation import next_generation, num_fittest
@@ -63,7 +65,7 @@ def do_move(gameState, cur_player, parameters):
 
 
 def play_game(bot1, bot2):
-    gameState = [initState_column[:] for initState_column in initState]
+    gameState = deepcopy(initState)
     bot1_parameters = all_parameters[bot1]
     bot2_parameters = all_parameters[bot2]
     cur_player = 1
@@ -84,7 +86,7 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generation = 112
+generation = 115
 while True:
     total_moves = 0
     win_types = {"Stacked": 0, "Flat": 0, "Diagonal": 0}
