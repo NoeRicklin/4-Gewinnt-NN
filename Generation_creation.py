@@ -22,9 +22,9 @@ def make_child(parent_parameters, bot_index):
     for layer in new_parameters:
         for node in layer:
             for coefficient in node[0]:
-                adjusted_parameters += str(float(coefficient) + random.normal(0, 0.25)) + ","
+                adjusted_parameters += str(float(coefficient) + random.normal(0, 0.1)) + ","
             adjusted_parameters = adjusted_parameters.rstrip(",") + " "
-            adjusted_parameters += str(float(node[1]) + random.normal(0, 0.25)) + "|"
+            adjusted_parameters += str(float(node[1]) + random.normal(0, 0.1)) + "|"
         adjusted_parameters = adjusted_parameters.rstrip("|") + "\n"
     adjusted_parameters = adjusted_parameters.rstrip("\n")
 

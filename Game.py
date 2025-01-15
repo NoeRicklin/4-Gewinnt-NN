@@ -1,6 +1,7 @@
 from Bot_move import bot_move
 from NN_Setup import bot_count
 from Generation_creation import next_generation, num_fittest
+from copy import deepcopy
 import os
 from time import time
 
@@ -54,7 +55,7 @@ def do_move(gameState, cur_player, parameters):
 
 
 def play_game(bot1, bot2):
-    gameState = [initState_column[:] for initState_column in initState]
+    gameState = deepcopy(initState)
     bot1_parameters = all_parameters[bot1]
     bot2_parameters = all_parameters[bot2]
     cur_player = 1

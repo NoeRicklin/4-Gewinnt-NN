@@ -2,6 +2,7 @@ import pygame
 import os
 from Bot_moveV4 import bot_move
 from NN_Setup import bot_count
+from time import sleep
 
 # pygame setup
 pygame.init()
@@ -124,7 +125,7 @@ def play_move(cur_player, parameters):
     if cur_player == -1:
         return bot_move(gameState, parameters, cur_player)
     else:
-        return player_move()
+        return bot_move(gameState, all_parameters[9], cur_player)#player_move()
 
 
 rounds = 0
@@ -140,7 +141,8 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[8])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[73])
+    sleep(0.2)
 
     # Check if someone won with the last move
     if new_stone_pos is not None:
