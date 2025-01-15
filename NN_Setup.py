@@ -11,7 +11,7 @@ from time import time
 # Example layer: 4,7,5 7|7,10,1 2|10,8,5 7|1,4,6 3|7,10,4 1|10,6,6 10|2,10,6 2
 
 n_input = 42
-n_hlayers = [20]
+n_hlayers = [7]
 n_output = 7
 
 bot_count = 100
@@ -48,5 +48,5 @@ def create_bot(bot_name):
 
 
 # create 100 bots
-# for i in range(bot_count):
-#     create_bot(i)
+for i in range(bot_count):
+    create_bot(i)
