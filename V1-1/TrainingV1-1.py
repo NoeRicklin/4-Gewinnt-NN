@@ -40,25 +40,27 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
+# Set up statistics file for writing
 statistics_file = open(os.path.dirname(__file__) + "\\Generation_statistics.csv", "w", newline="")
 fieldnames = (["Zeit", "Spieldauer", "Stapel", "Flach", "Diagonal", "Fittester"] +
               [f"Bot{i} Fittnes" for i in range(bot_count)])
 writer = csv.DictWriter(statistics_file, fieldnames=fieldnames)
 writer.writeheader()
 
-generations = 3
+generations = 1000
 
 for i in range(generations):
     total_moves = 0
     win_types = {"Stapel": 0, "Flach": 0, "Diagonal": 0}
     t1 = time()
+
     # read new parameters from bot files
     all_parameters = parameters_extraction("\\V1-1\\bot_parametersV1-1\\")
 
     # let the games begin!
     bot_fitness = [0 for _ in range(bot_count)]
     for bot1 in range(bot_count):
-        for bot2 in range(bot_count):
+        for bot2 in range(bot1 + 1, bot_count):
             moves, winner = play_game(bot1, bot2)
             total_moves += moves
             if winner == 1:
@@ -71,6 +73,7 @@ for i in range(generations):
     next_generation(all_parameters, bot_fitness)
     t2 = time()
 
+    # Print generation statistics
     print(f"Generation {i}")
     print(f"Bot-fitness: {bot_fitness}")
     fittest = [i[1] for i in sorted(zip(bot_fitness, [i for i in range(len(bot_fitness))]), reverse=True)[:num_fittest]]
@@ -81,13 +84,14 @@ for i in range(generations):
     print(win_types)
     print()
 
+    # Save generation statistics to file
     row = {"Zeit": str(round(t2-t1, 2)),
            "Spieldauer": avg_moves}
     for type in win_types:
         row[type] = win_types[type]
-    row["Fittester"] = fittest[0]
-    for i in range(bot_count):
-        row[f"Bot{i} Fittnes"] = str(bot_fitness[i])
+    row["Fittester"] = str(fittest[0])
+    for bot in range(bot_count):
+        row[f"Bot{bot} Fittnes"] = str(bot_fitness[i])
 
     writer.writerow(row)
 
