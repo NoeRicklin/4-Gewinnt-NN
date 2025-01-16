@@ -20,9 +20,9 @@ layers = [n_input] + n_hlayers + [n_output]
 
 
 def create_bot(bot_name):
-    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV4\\Bot{bot_name}.txt', "w")
+    NN_file = open(os.path.dirname(__file__) + f'\\V1-1\\bot_parametersV1-1\\Bot{bot_name}.txt', "w")
     NN_file.close()
-    NN_file = open(os.path.dirname(__file__) + f'\\bot_parametersV4\\Bot{bot_name}.txt', "a")
+    NN_file = open(os.path.dirname(__file__) + f'\\V1-1\\bot_parametersV1-1\\Bot{bot_name}.txt', "a")
     for layer_ind in range(1, len(layers)):
         layer_params = ""
         cur_layer = layers[layer_ind]

@@ -1,5 +1,6 @@
 from Bot_move import bot_move
 from copy import deepcopy
+import csv
 from Generation_creation import next_generation, num_fittest
 from time import time
 from Utils import *
@@ -31,7 +32,7 @@ def play_game(bot1, bot2):
         moves += 1
         if new_stone_pos == -1:
             return moves, 0
-        if test_win(gameState, new_stone_pos, cur_player):
+        if test_win(gameState, new_stone_pos, cur_player, win_types):
             return moves, cur_player
         else:
             cur_player *= -1
@@ -39,13 +40,20 @@ def play_game(bot1, bot2):
 
 all_parameters = [[] for _ in range(bot_count)]
 
-generations = 1000
+statistics_file = open(os.path.dirname(__file__) + "\\Generation_statistics.csv", "w", newline="")
+fieldnames = (["Zeit", "Spieldauer", "Stapel", "Flach", "Diagonal", "Fittester"] +
+              [f"Bot{i} Fittnes" for i in range(bot_count)])
+writer = csv.DictWriter(statistics_file, fieldnames=fieldnames)
+writer.writeheader()
 
-for _ in range(generations):
+generations = 3
+
+for i in range(generations):
     total_moves = 0
+    win_types = {"Stapel": 0, "Flach": 0, "Diagonal": 0}
     t1 = time()
     # read new parameters from bot files
-    all_parameters = parameters_extraction("\\V1-1\\bot_parametersV1-\\")
+    all_parameters = parameters_extraction("\\V1-1\\bot_parametersV1-1\\")
 
     # let the games begin!
     bot_fitness = [0 for _ in range(bot_count)]
@@ -63,9 +71,24 @@ for _ in range(generations):
     next_generation(all_parameters, bot_fitness)
     t2 = time()
 
+    print(f"Generation {i}")
     print(f"Bot-fitness: {bot_fitness}")
     fittest = [i[1] for i in sorted(zip(bot_fitness, [i for i in range(len(bot_fitness))]), reverse=True)[:num_fittest]]
     print(f"Fittest: {fittest}")
+    avg_moves = round(total_moves / bot_count ** 2, 1)
     print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}")
     print(f"Generation took {round(t2 - t1, 1)} seconds")
+    print(win_types)
     print()
+
+    row = {"Zeit": str(round(t2-t1, 2)),
+           "Spieldauer": avg_moves}
+    for type in win_types:
+        row[type] = win_types[type]
+    row["Fittester"] = fittest[0]
+    for i in range(bot_count):
+        row[f"Bot{i} Fittnes"] = str(bot_fitness[i])
+
+    writer.writerow(row)
+
+statistics_file.close()
