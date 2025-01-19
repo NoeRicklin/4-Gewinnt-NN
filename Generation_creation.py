@@ -1,4 +1,4 @@
-from NN_Setup import bot_count, create_bot
+from NN_Setup import bot_count
 from numpy import random
 from copy import deepcopy
 import os

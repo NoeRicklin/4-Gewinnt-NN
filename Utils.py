@@ -1,4 +1,3 @@
-from NN_Setup import bot_count
 import os
 
 
@@ -42,7 +41,7 @@ def test_win(game_state, new_stone_pos, new_type, win_types):
     return False
 
 
-def parameters_extraction(path):
+def parameters_extraction(path, bot_count):
     all_parameters = []
     for i in range(bot_count):
         parameters = open(os.path.dirname(__file__) + f'{path}Bot{i}.txt', "r").read()

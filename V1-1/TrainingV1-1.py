@@ -1,7 +1,7 @@
 from Bot_move import bot_move
 from copy import deepcopy
 import csv
-from Generation_creation import next_generation, num_fittest
+from Generation_creationV1_1 import next_generation, num_fittest, version, bot_count
 from time import time
 from Utils import *
 
@@ -11,8 +11,12 @@ cur_player = 1
 
 def do_move(gameState, cur_player, parameters):
     column = bot_move(gameState, parameters, cur_player)
+
+    # On Draw
     if column is None:
         return -1
+
+    # Puts the stone in the correct position in the selected column
     for tile_index, tile in enumerate(gameState[column]):
         if tile == 0:
             gameState[column][tile_index] = cur_player
@@ -21,41 +25,48 @@ def do_move(gameState, cur_player, parameters):
 
 
 def play_game(bot1, bot2):
+    # initializes the gameState to an empty board
     gameState = deepcopy(initState)
+
+    # retrieves the parameters for the selected bots
     bot1_parameters = all_parameters[bot1]
     bot2_parameters = all_parameters[bot2]
+
     cur_player = 1
     moves = 0
+
     while True:
         # Play the move
         new_stone_pos = do_move(gameState, cur_player, bot1_parameters if cur_player == 1 else bot2_parameters)
         moves += 1
+
+        # Check for draw
         if new_stone_pos == -1:
+            win_types["Unentschieden"] += 1
             return moves, 0
+
+        # Check for win
         if test_win(gameState, new_stone_pos, cur_player, win_types):
             return moves, cur_player
         else:
             cur_player *= -1
 
 
-all_parameters = [[] for _ in range(bot_count)]
-
-# Set up statistics file for writing
-statistics_file = open(os.path.dirname(__file__) + "\\Generation_statistics.csv", "w", newline="")
-fieldnames = (["Zeit", "Spieldauer", "Stapel", "Flach", "Diagonal", "Fittester"] +
-              [f"Bot{i} Fittnes" for i in range(bot_count)])
+# Set up statistics-file for writing
+statistics_file = open(os.path.dirname(__file__) + f"\\Generation_statistics{version}.csv", "w", newline="")
+fieldnames = ["Generation", "Zeit", "Spieldauer", "Stapel", "Flach", "Diagonal", "Unentschieden", "Hoechste Fitness"]
 writer = csv.DictWriter(statistics_file, fieldnames=fieldnames)
 writer.writeheader()
 
+# Run through all the generations of evolution
 generations = 1000
-
-for i in range(generations):
+for cur_generation in range(generations):
     total_moves = 0
-    win_types = {"Stapel": 0, "Flach": 0, "Diagonal": 0}
+    win_types = {"Stapel": 0, "Flach": 0, "Diagonal": 0, "Unentschieden": 0}
     t1 = time()
 
     # read new parameters from bot files
-    all_parameters = parameters_extraction("\\V1-1\\bot_parametersV1-1\\")
+    all_parameters = parameters_extraction(f"\\{version}\\bot_parameters{version}\\", bot_count)
 
     # let the games begin!
     bot_fitness = [0 for _ in range(bot_count)]
@@ -74,24 +85,23 @@ for i in range(generations):
     t2 = time()
 
     # Print generation statistics
-    print(f"Generation {i}")
+    print(f"Generation {cur_generation}")
     print(f"Bot-fitness: {bot_fitness}")
     fittest = [i[1] for i in sorted(zip(bot_fitness, [i for i in range(len(bot_fitness))]), reverse=True)[:num_fittest]]
     print(f"Fittest: {fittest}")
-    avg_moves = round(total_moves / bot_count ** 2, 1)
-    print(f"Av. number of moves in generation: {round(total_moves / bot_count ** 2, 1)}")
+    avg_moves = round(total_moves / (bot_count * (bot_count - 1) / 2), 1)
+    print(f"Av. number of moves in generation: {avg_moves}")
     print(f"Generation took {round(t2 - t1, 1)} seconds")
     print(win_types)
     print()
 
     # Save generation statistics to file
-    row = {"Zeit": str(round(t2-t1, 2)),
-           "Spieldauer": avg_moves}
+    row = {"Generation": cur_generation,
+           "Zeit": str(round(t2 - t1, 2)),
+           "Spieldauer": avg_moves,
+           "Hoechste Fitness": max(bot_fitness)}
     for type in win_types:
         row[type] = win_types[type]
-    row["Fittester"] = str(fittest[0])
-    for bot in range(bot_count):
-        row[f"Bot{bot} Fittnes"] = str(bot_fitness[i])
 
     writer.writerow(row)
 

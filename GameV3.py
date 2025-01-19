@@ -55,25 +55,6 @@ def do_move(gameState, cur_player, parameters):
             return new_stone_pos
 
 
-'''
-def play_game(bot1, bot2):
-    gameState = [initState_column[:] for initState_column in initState]
-    bot1_parameters = all_parameters[bot1]
-    bot2_parameters = all_parameters[bot2]
-    cur_player = 1
-    moves = 0
-    while True:
-        # Play the move
-        new_stone_pos = do_move(gameState, cur_player, bot1_parameters if cur_player == 1 else bot2_parameters)
-        moves += 1
-        if new_stone_pos == -1:
-            return moves, 0
-        if test_win(gameState, new_stone_pos, cur_player):
-            return moves, cur_player
-        else:
-            cur_player *= -1
-'''
-
 def random_move(gameState, current_player):
     column = randint(0, 6)
     count = 0

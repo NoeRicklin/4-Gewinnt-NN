@@ -1,9 +1,9 @@
 import pygame
 import os
 from Bot_moveV4 import bot_move
-from NN_Setup import bot_count
 from time import sleep
 
+bot_count = 100
 # pygame setup
 pygame.init()
 width, height = 700, 600
@@ -16,7 +16,7 @@ dt = 0
 all_parameters = [[] for _ in range(bot_count)]
 
 for i in range(bot_count):
-    parameters = open(os.path.dirname(__file__) + f'\\bot_parametersV4\\Bot{i}.txt', "r").read()
+    parameters = open(os.path.dirname(__file__) + f'\\V1-1\\bot_parametersV1-1\\Bot{i}.txt', "r").read()
     # converts the parameters into a usable format
     # parameters[layer][node][constant]([coefficient])
     parameters = parameters.split("\n")
@@ -125,7 +125,7 @@ def play_move(cur_player, parameters):
     if cur_player == -1:
         return bot_move(gameState, parameters, cur_player)
     else:
-        return bot_move(gameState, all_parameters[9], cur_player)#player_move()
+        player_move()
 
 
 rounds = 0
@@ -141,7 +141,7 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[73])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[0])
     sleep(0.2)
 
     # Check if someone won with the last move
