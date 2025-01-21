@@ -83,7 +83,7 @@ writer = csv.DictWriter(statistics_file, fieldnames=fieldnames)
 writer.writeheader()
 
 # Run through all the generations of evolution
-generations = 10000
+generations = 2000
 for cur_generation in range(generations):
     t1 = time()
 

@@ -61,7 +61,7 @@ writer = csv.DictWriter(statistics_file, fieldnames=fieldnames)
 writer.writeheader()
 
 # Run through all the generations of evolution
-generations = 1000
+generations = 200
 for cur_generation in range(generations):
     total_moves = 0
     win_types = {"Stapel": 0, "Flach": 0, "Diagonal": 0, "Unentschieden": 0}
