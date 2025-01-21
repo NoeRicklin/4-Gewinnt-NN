@@ -1,7 +1,6 @@
 import pygame
 import os
-from Bot_moveV4 import bot_move
-from time import sleep
+from V5.Bot_moveV5 import bot_move
 
 bot_count = 100
 # pygame setup
@@ -25,7 +24,9 @@ for i in range(bot_count):
     parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
     all_parameters[i] = parameters
 
-gameState = [[0 for _ in range(6)] for _ in range(7)]
+gameState = [[-1, -1, 0, 0, 0, 0], [-1, 1, -1, -1, -1, 0], [1, 1, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [-1, 1, 1, 0, 0, 0], [-1, 0, 0, 0, 0, 0], [-1, 1, 1, 1, 0, 0]]
+
+
 cur_player = 1
 
 
@@ -140,6 +141,7 @@ while running:
     drawGrid()
     draw_game(gameState)
 
+    """
     # Play the move
     new_stone_pos = do_move(gameState, cur_player, all_parameters[0])
     sleep(0.2)
@@ -151,6 +153,6 @@ while running:
             running = False
         else:
             cur_player *= -1
-
+    """
     pygame.display.flip()
     dt = clock.tick(20) / 100

@@ -2,10 +2,11 @@ from Bot_move import bot_move
 from copy import deepcopy
 import csv
 from Generation_creationV3 import next_generation, num_fittest, bot_count, version
+from Gamestates_extractor import new_gameState
+from random import randint
 from time import time
 from Utils import *
 
-initState = [[0 for _ in range(6)] for _ in range(7)]
 cur_player = 1
 
 
@@ -65,6 +66,7 @@ for cur_generation in range(generations):
     total_moves = 0
     win_types = {"Stapel": 0, "Flach": 0, "Diagonal": 0, "Unentschieden": 0}
     t1 = time()
+    initState = new_gameState(randint(0, 67556))
 
     # read new parameters from bot files
     all_parameters = parameters_extraction(f"\\{version}\\bot_parameters{version}\\", bot_count)
