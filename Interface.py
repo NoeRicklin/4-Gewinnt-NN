@@ -1,5 +1,4 @@
 import pygame
-import os
 from Utils import *
 
 # pygame setup
@@ -16,11 +15,11 @@ gameState = [[0 for _ in range(6)] for _ in range(7)]
 cur_player = 1
 
 # choose bot infos
-version = "V4"
+version = "V6"
 bot_count = 100
 against_bot = True
-bot_player = -1
-bot_number = 69
+bot_player = 1
+bot_number = 4
 all_parameters = parameters_extraction(f'\\{version}\\bot_parameters{version}\\', bot_count)
 
 # import correct bot_move version
@@ -112,6 +111,9 @@ while running:
                 print(f"Bot{bot_number} has won!!!")
             else:
                 print(f"Player {cur_player} has won!!!")
+            # Draw Game
+            drawGrid()
+            draw_game(gameState)
             running = False
         else:
             cur_player *= -1
