@@ -1,8 +1,7 @@
 import pygame
 import os
-from V5.Bot_moveV5 import bot_move
+from Utils import *
 
-bot_count = 100
 # pygame setup
 pygame.init()
 width, height = 700, 600
@@ -12,23 +11,23 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-all_parameters = [[] for _ in range(bot_count)]
-
-for i in range(bot_count):
-    parameters = open(os.path.dirname(__file__) + f'\\V1-1\\bot_parametersV1-1\\Bot{i}.txt', "r").read()
-    # converts the parameters into a usable format
-    # parameters[layer][node][constant]([coefficient])
-    parameters = parameters.split("\n")
-    parameters = [layer.split("|") for layer in parameters]
-    parameters = [[node.split(" ") for node in layer] for layer in parameters]
-    parameters = [[[node[0].split(","), node[1]] for node in layer] for layer in parameters]
-    all_parameters[i] = parameters
-
-gameState = [[-1, -1, 0, 0, 0, 0], [-1, 1, -1, -1, -1, 0], [1, 1, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [-1, 1, 1, 0, 0, 0], [-1, 0, 0, 0, 0, 0], [-1, 1, 1, 1, 0, 0]]
-
-
+# game setup
+gameState = [[0 for _ in range(6)] for _ in range(7)]
 cur_player = 1
 
+# choose bot infos
+version = "V4"
+bot_count = 100
+against_bot = True
+bot_player = -1
+bot_number = 69
+all_parameters = parameters_extraction(f'\\{version}\\bot_parameters{version}\\', bot_count)
+
+# import correct bot_move version
+if version == "V5":
+    from V5.Bot_moveV5 import bot_move
+else:
+    from Bot_move import bot_move
 
 def drawGrid():
     screen.fill("purple")
@@ -56,43 +55,6 @@ def draw_game(list):
             display_chip([x, y], list[x][y])
 
 
-def get_diag_states(game_state, stone_pos, dir):
-    diagonal = []
-    cur_pos = stone_pos
-
-    while True:
-        offset_pos = (cur_pos[0] - dir[0], cur_pos[1] - dir[1])
-        if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
-            break
-        cur_pos = offset_pos
-
-    while True:
-        diagonal.append(game_state[cur_pos[0]][cur_pos[1]])
-        offset_pos = (cur_pos[0] + dir[0], cur_pos[1] + dir[1])
-        if not (0 <= offset_pos[0] <= 6 and 0 <= offset_pos[1] <= 5):
-            break
-        cur_pos = offset_pos
-    return diagonal
-
-
-def test_win(game_state, new_stone_pos, new_type):
-    ver_line = game_state[new_stone_pos[0]]
-    hor_line = [game_state[i][new_stone_pos[1]] for i in range(7)]
-    d1_line = get_diag_states(game_state, new_stone_pos, (1, 1))
-    d2_line = get_diag_states(game_state, new_stone_pos, (1, -1))
-
-    for line in [hor_line, ver_line, d1_line, d2_line]:
-        in_row_amount = 0
-        for chip_type in line:
-            if chip_type == new_type:
-                in_row_amount += 1
-            else:
-                in_row_amount = 0
-            if in_row_amount == 4:
-                return True
-    return False
-
-
 def do_move(gameState, cur_player, parameters):
     column = play_move(cur_player, parameters)
     if column is None: return
@@ -106,7 +68,6 @@ def do_move(gameState, cur_player, parameters):
 
 # held variable to make sure one click isn't counted for multiple inputs
 held = False
-
 
 def player_move():
     global held
@@ -122,11 +83,11 @@ def player_move():
 
 
 def play_move(cur_player, parameters):
-    # return player_move()
-    if cur_player == -1:
+
+    if cur_player == bot_player and against_bot:
         return bot_move(gameState, parameters, cur_player)
     else:
-        player_move()
+        return player_move()
 
 
 rounds = 0
@@ -141,18 +102,18 @@ while running:
     drawGrid()
     draw_game(gameState)
 
-    """
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[0])
-    sleep(0.2)
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[bot_number])
 
     # Check if someone won with the last move
     if new_stone_pos is not None:
         if test_win(gameState, new_stone_pos, cur_player):
-            print(f"Player {cur_player} has won!!!")
+            if cur_player == bot_player and against_bot:
+                print(f"Bot{bot_number} has won!!!")
+            else:
+                print(f"Player {cur_player} has won!!!")
             running = False
         else:
             cur_player *= -1
-    """
     pygame.display.flip()
     dt = clock.tick(20) / 100

@@ -18,7 +18,7 @@ def get_diag_states(gameState, stone_pos, dir):
     return diagonal
 
 
-def test_win(game_state, new_stone_pos, new_type, win_types):
+def test_win(game_state, new_stone_pos, new_type, win_types={"Stapel": 0, "Flach": 0, "Diagonal": 0, "Unentschieden": 0}):
     ver_line = game_state[new_stone_pos[0]]
     hor_line = [game_state[i][new_stone_pos[1]] for i in range(7)]
     d1_line = get_diag_states(game_state, new_stone_pos, (1, 1))
