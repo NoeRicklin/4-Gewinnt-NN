@@ -1,5 +1,6 @@
 import pygame
 from Utils import *
+from time import sleep
 
 # pygame setup
 pygame.init()
@@ -15,11 +16,11 @@ gameState = [[0 for _ in range(6)] for _ in range(7)]
 cur_player = 1
 
 # choose bot infos
-version = "V6"
 bot_count = 100
 against_bot = True
-bot_player = 1
-bot_number = 4
+bot_player = -1  # Whether bot goes first or not
+version = "V6"
+bot_index = 24
 all_parameters = parameters_extraction(f'\\{version}\\bot_parameters{version}\\', bot_count)
 
 # import correct bot_move version
@@ -27,6 +28,7 @@ if version == "V5":
     from V5.Bot_moveV5 import bot_move
 else:
     from Bot_move import bot_move
+
 
 def drawGrid():
     screen.fill("purple")
@@ -68,6 +70,7 @@ def do_move(gameState, cur_player, parameters):
 # held variable to make sure one click isn't counted for multiple inputs
 held = False
 
+
 def player_move():
     global held
     if pygame.mouse.get_pressed()[0]:
@@ -82,7 +85,6 @@ def player_move():
 
 
 def play_move(cur_player, parameters):
-
     if cur_player == bot_player and against_bot:
         return bot_move(gameState, parameters, cur_player)
     else:
@@ -102,13 +104,13 @@ while running:
     draw_game(gameState)
 
     # Play the move
-    new_stone_pos = do_move(gameState, cur_player, all_parameters[bot_number])
+    new_stone_pos = do_move(gameState, cur_player, all_parameters[bot_index])
 
     # Check if someone won with the last move
     if new_stone_pos is not None:
         if test_win(gameState, new_stone_pos, cur_player):
             if cur_player == bot_player and against_bot:
-                print(f"Bot{bot_number} has won!!!")
+                print(f"Bot{bot_index} has won!!!")
             else:
                 print(f"Player {cur_player} has won!!!")
             # Draw Game
